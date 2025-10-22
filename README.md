@@ -37,17 +37,7 @@ In this lab, you will:
 | **Material 3 UI Styling** | Modern theme with primary/secondary colors and rounded UI |
 | **Dynamic Task Cards** | Each card displays color, title, description, and deadline |
 
-## 
-
-## 
-
-##  
-
-## 
-
-## 
-
-## ---
+---
 
 ##  **Architecture (MVC)**
 
