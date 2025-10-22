@@ -1,6 +1,6 @@
 ## **ToDo App: Lab 2 (Mobile Application Development)**
 
-## **Overview**
+### **Overview**
 
 This project is a **ToDo Android application** built using **Kotlin** and **Jetpack Compose**.  
  It allows users to create, view, search, and delete tasks with **persistent storage using Room Database**, **color-coded task cards**, and **calendar-based deadline selection**.
@@ -9,7 +9,7 @@ The app is designed following the **Model-View-Controller (MVC)** pattern, separ
 
 ---
 
-## **Objectives**
+### **Objectives**
 
 In this lab, you will:
 
@@ -22,7 +22,7 @@ In this lab, you will:
 
 ---
 
-## **Features Implemented**
+### **Features Implemented**
 
 | Feature | Description |
 | ----- | ----- |
@@ -39,7 +39,7 @@ In this lab, you will:
 
 ---
 
-##  **Architecture (MVC)**
+###  **Architecture (MVC)**
 
 | Layer | Component | Responsibility |
 | ----- | ----- | ----- |
@@ -51,7 +51,7 @@ In this lab, you will:
 
 ---
 
-## **Project Structure**
+### **Project Structure**
 
 `app/`  
  `├── src/main/java/com/example/todo/`  
@@ -76,7 +76,7 @@ In this lab, you will:
 
 ---
 
-## **UI Design Highlights**
+### **UI Design Highlights**
 
 * **Modern Material 3 theme** with consistent typography and color scheme.
 
@@ -88,7 +88,7 @@ In this lab, you will:
 
 ---
 
-## **Dependencies**
+### **Dependencies**
 
 | Library | Purpose |
 | ----- | ----- |
@@ -114,7 +114,7 @@ In this lab, you will:
 
 ---
 
-## **How to Run**
+### **How to Run**
 
 **Clone the Repository**
 
@@ -139,7 +139,7 @@ In this lab, you will:
 
 ---
 
-##  **Example Usage**
+###  **Example Usage**
 
 1. Tap the ➕ to open the **New Task** screen.  
 2. Enter a **title** and **description**.  
@@ -151,7 +151,7 @@ In this lab, you will:
 
 ---
 
-## **Final Summary**
+### **Final Summary**
 
 | Requirement | Implemented In |
 | ----- | ----- |
