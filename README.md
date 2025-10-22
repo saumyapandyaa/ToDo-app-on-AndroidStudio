@@ -3,7 +3,7 @@
 ### **Overview**
 
 This project is a **ToDo Android application** built using **Kotlin** and **Jetpack Compose**.  
- It allows users to create, view, search, and delete tasks — with **persistent storage using Room Database**, **color-coded task cards**, and **calendar-based deadline selection**.
+ It allows users to create, view, search, and delete tasks with **persistent storage using Room Database**, **color-coded task cards**, and **calendar-based deadline selection**.
 
 The app is designed following the **Model-View-Controller (MVC)** pattern, separating UI, business logic, and database interactions for scalability and maintainability.
 
