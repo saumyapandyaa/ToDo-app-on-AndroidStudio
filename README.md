@@ -1,4 +1,4 @@
-## **ToDo App: Lab 2 (Mobile Application Development)**
+## **ToDo App: Mobile Application Development**
 
 ### **Overview**
 
