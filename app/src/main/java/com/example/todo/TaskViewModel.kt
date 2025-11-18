@@ -8,6 +8,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
+
 class TaskViewModel(application: Application) : AndroidViewModel(application) {
 
     private val repository: TaskRepository
@@ -41,4 +42,20 @@ class TaskViewModel(application: Application) : AndroidViewModel(application) {
             loadTasks() // refresh after deletion
         }
     }
+
+    fun updateTask(task: Task) {
+        viewModelScope.launch {
+            repository.updateTask(task)
+            loadTasks()
+        }
+    }
+
+    fun getTaskById(taskId: Int, callback: (Task?) -> Unit) {
+        viewModelScope.launch {
+            val task = repository.getTaskById(taskId)
+            callback(task)
+        }
+    }
+
+
 }

@@ -1,5 +1,6 @@
 package com.example.todo
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -13,6 +14,10 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import coil.compose.AsyncImage
+import androidx.compose.ui.layout.ContentScale
+
+
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -91,18 +96,22 @@ fun HomeScreen(navController: NavController, viewModel: TaskViewModel) {
                     Card(
                         modifier = Modifier
                             .fillMaxWidth()
+                            .padding(8.dp)
+                            .clickable { navController.navigate("editTask/${task.id}") }
                             .wrapContentHeight(),
                         shape = MaterialTheme.shapes.large,
                         elevation = CardDefaults.cardElevation(defaultElevation = 6.dp),
                         colors = CardDefaults.cardColors(containerColor = backgroundColor)
                     ) {
                         Column(modifier = Modifier.padding(16.dp)) {
+                            // 🏷️ Title
                             Text(
                                 text = task.title,
                                 style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Bold),
                                 color = MaterialTheme.colorScheme.onSurface
                             )
 
+                            // 📅 Deadline
                             if (task.deadline.isNotBlank())
                                 Text(
                                     text = "📅 Deadline: ${task.deadline}",
@@ -110,12 +119,26 @@ fun HomeScreen(navController: NavController, viewModel: TaskViewModel) {
                                     color = MaterialTheme.colorScheme.onSurfaceVariant
                                 )
 
+                            // 📝 Description
                             if (task.description.isNotBlank())
                                 Text(
                                     text = task.description,
                                     style = MaterialTheme.typography.bodySmall,
                                     color = MaterialTheme.colorScheme.onSurfaceVariant
                                 )
+
+                            // 🖼️ Show Image if available
+                            if (!task.imageUri.isNullOrEmpty()) {
+                                Spacer(modifier = Modifier.height(8.dp))
+                                AsyncImage(
+                                    model = task.imageUri,
+                                    contentDescription = "Task image",
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .height(180.dp),
+                                    contentScale = ContentScale.Crop
+                                )
+                            }
 
                             Spacer(modifier = Modifier.height(10.dp))
 

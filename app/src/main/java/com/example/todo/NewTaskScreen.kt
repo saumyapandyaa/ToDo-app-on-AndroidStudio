@@ -1,6 +1,10 @@
 package com.example.todo
 
 import android.app.DatePickerDialog
+import android.net.Uri
+import android.widget.Toast
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -11,11 +15,17 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
+import androidx.core.content.FileProvider
 import androidx.navigation.NavController
+import coil.compose.AsyncImage
+import java.io.File
+import java.io.InputStream
+import java.io.OutputStream
 import java.util.*
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -26,12 +36,54 @@ fun NewTaskScreen(
 ) {
     var title by remember { mutableStateOf(TextFieldValue("")) }
     var description by remember { mutableStateOf(TextFieldValue("")) }
-    var selectedColor by remember { mutableStateOf(Color(0xFF64B5F6)) } // Default Blue
+    var selectedColor by remember { mutableStateOf(Color(0xFF64B5F6)) }
     var deadline by remember { mutableStateOf("") }
     var showError by remember { mutableStateOf(false) }
+    var imageUri by remember { mutableStateOf<String?>(null) }
 
     val context = LocalContext.current
     val calendar = Calendar.getInstance()
+
+    // ✅ Helper: Save image permanently in internal storage
+    fun persistImage(context: android.content.Context, input: InputStream): String {
+        val file = File(context.filesDir, "${System.currentTimeMillis()}.jpg")
+        file.outputStream().use { output: OutputStream -> input.copyTo(output) }
+        return file.absolutePath
+    }
+
+    // 🖼 Upload from gallery
+    val pickImageLauncher =
+        rememberLauncherForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
+            uri?.let {
+                val input = context.contentResolver.openInputStream(it)
+                if (input != null) {
+                    val savedPath = persistImage(context, input)
+                    imageUri = savedPath
+                }
+            }
+        }
+
+    // 📷 Capture from camera
+    val photoFile = remember { File(context.filesDir, "photo_${System.currentTimeMillis()}.jpg") }
+    val photoUri = FileProvider.getUriForFile(context, "${context.packageName}.provider", photoFile)
+
+    val takePhotoLauncher =
+        rememberLauncherForActivityResult(ActivityResultContracts.TakePicture()) { success ->
+            if (success) {
+                imageUri = photoFile.absolutePath // ✅ Persistent path
+            } else {
+                Toast.makeText(context, "Capture cancelled", Toast.LENGTH_SHORT).show()
+            }
+        }
+
+    val requestCameraPermission =
+        rememberLauncherForActivityResult(ActivityResultContracts.RequestPermission()) { granted ->
+            if (granted) {
+                takePhotoLauncher.launch(photoUri)
+            } else {
+                Toast.makeText(context, "Camera permission denied", Toast.LENGTH_SHORT).show()
+            }
+        }
 
     Scaffold(
         topBar = {
@@ -104,6 +156,32 @@ fun NewTaskScreen(
 
             Spacer(modifier = Modifier.height(20.dp))
 
+            // 🖼 Image preview + buttons
+            if (!imageUri.isNullOrEmpty()) {
+                AsyncImage(
+                    model = File(imageUri!!),
+                    contentDescription = "Selected image",
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(180.dp),
+                    contentScale = ContentScale.Crop
+                )
+                Spacer(modifier = Modifier.height(8.dp))
+            }
+
+            Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                Button(onClick = { pickImageLauncher.launch("image/*") }) {
+                    Text("Upload Image")
+                }
+                Button(onClick = {
+                    requestCameraPermission.launch(android.Manifest.permission.CAMERA)
+                }) {
+                    Text("Capture Image")
+                }
+            }
+
+            Spacer(modifier = Modifier.height(30.dp))
+
             // 🎨 Color Picker
             Text("Pick Task Color:", style = MaterialTheme.typography.titleMedium)
             Spacer(modifier = Modifier.height(8.dp))
@@ -146,7 +224,6 @@ fun NewTaskScreen(
                     if (title.text.isBlank()) {
                         showError = true
                     } else {
-                        // ✅ Properly convert color to clean hex (RRGGBB)
                         val red = (selectedColor.red * 255).toInt()
                         val green = (selectedColor.green * 255).toInt()
                         val blue = (selectedColor.blue * 255).toInt()
@@ -156,7 +233,8 @@ fun NewTaskScreen(
                             title = title.text,
                             deadline = deadline,
                             description = description.text,
-                            color = hexColor
+                            color = hexColor,
+                            imageUri = imageUri
                         )
                         onAddTask(task)
                         navController.popBackStack()

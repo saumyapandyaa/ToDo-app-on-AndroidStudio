@@ -7,6 +7,8 @@ import androidx.activity.viewModels
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.NavType
+import androidx.navigation.navArgument
 import com.example.todo.ui.theme.ToDoTheme
 
 class HomeActivity : ComponentActivity() {
@@ -39,6 +41,19 @@ class HomeActivity : ComponentActivity() {
                             onAddTask = { task ->
                                 taskViewModel.addTask(task)
                             }
+                        )
+                    }
+
+                    // ✏️ Edit Task Screen (NEW for Lab 4)
+                    composable(
+                        route = "editTask/{taskId}",
+                        arguments = listOf(navArgument("taskId") { type = NavType.IntType })
+                    ) { backStackEntry ->
+                        val taskId = backStackEntry.arguments?.getInt("taskId") ?: 0
+                        EditTaskScreen(
+                            navController = navController,
+                            taskId = taskId,
+                            viewModel = taskViewModel
                         )
                     }
                 }

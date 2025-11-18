@@ -9,5 +9,6 @@ data class Task(
     val title: String,
     val deadline: String,
     val description: String,
-    val color: String // HEX color code for styling
+    val color: String,           // HEX color
+    val imageUri: String? = null // NEW: optional image field
 )
